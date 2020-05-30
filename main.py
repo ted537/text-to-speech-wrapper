@@ -6,13 +6,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-i',dest='input')
 parser.add_argument('-o',dest='output')
 # gender is MALE,FEMALE, or NEUTRAL
-parser.add_argument('-g',dest='gender',type=str)
+parser.add_argument('-g',dest='gender',default='NEUTRAL')
 # language code is en-US,en-UK,etc
 # https://cloud.google.com/text-to-speech/docs/voices
-parser.add_argument('-l',dest='language',type=str)
+parser.add_argument('-l',dest='language')
+parser.add_argument('-n',dest='name')
 args = parser.parse_args()
 
-if args.input is None or args.output is None or args.gender is None or args.language is None:
+if (
+    args.input is None or 
+    args.output is None or 
+    args.gender is None or 
+    args.language is None
+):
     print("MISSING ARGUMENTS")
     sys.exit()
 
@@ -25,7 +31,8 @@ synthesis_input = texttospeech.types.SynthesisInput(text=input_str)
 
 voice = texttospeech.types.VoiceSelectionParams(
     language_code=args.language,
-    ssml_gender=texttospeech.enums.SsmlVoiceGender[args.gender.upper()]
+    ssml_gender=texttospeech.enums.SsmlVoiceGender[args.gender.upper()],
+    name=args.name
 )
 
 audio_config = texttospeech.types.AudioConfig(
