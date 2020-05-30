@@ -11,10 +11,12 @@ if args.input is None or args.output is None:
     print("Input and output need to be supplied")
     sys.exit()
 
-sys.exit()
-client = texttospeech.TextToSpeechClient()
+with open(args.input,'r') as input_file:
+    lines = input_file.readlines()
+    input_str = ''.join(lines)
 
-synthesis_input = texttospeech.types.SynthesisInput(text="Hi")
+client = texttospeech.TextToSpeechClient()
+synthesis_input = texttospeech.types.SynthesisInput(text=input_str)
 
 voice = texttospeech.types.VoiceSelectionParams(
     language_code='en-US',
@@ -27,5 +29,5 @@ audio_config = texttospeech.types.AudioConfig(
 
 response = client.synthesize_speech(synthesis_input,voice,audio_config)
 
-with open('output.mp3','wb') as out:
+with open(args.output,'wb') as out:
     out.write(response.audio_content)
